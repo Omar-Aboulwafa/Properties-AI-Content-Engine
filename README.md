@@ -40,11 +40,8 @@ Automated Social Media Marketing Intelligence Platform
 
 ### Workflow #1: Content Generator
 - **Input:** New property listings from Google Sheets
-- 
 - **Processing:** AI Gemini (Chief Investment Officer persona)
-- 
 - **Output:** Structured JSON (Title, Copy, Hashtags, CTA)
-- 
 - **Approval:** Airtable dashboard for human review
 
 ### Workflow #2: Publisher
