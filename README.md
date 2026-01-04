@@ -6,15 +6,22 @@ Automated Social Media Marketing Intelligence Platform
 
 ## EXECUTIVE SUMMARY
 • Automates content generation from property listings
+
 • AI-powered copywriting (Investment + Luxury angles)
+
 • Multi-platform publishing (LinkedIn, Facebook, Instagram)
+
 • Human approval workflow (Quality control)
+
 • ROI Tracking & Analytics ready
 
 ## RESULTS (after 30 days)
 ✓ 200+ posts generated (vs. 10 manual/month)
+
 ✓ 40+ hours saved on copywriting per month
+
 ✓ Brand consistency across all channels
+
 ✓ Lead response automation (upcoming phase)
 
 ## TECHNOLOGY STACK
