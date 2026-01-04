@@ -19,7 +19,11 @@ Automated Social Media Marketing Intelligence Platform
 
 ## TECHNOLOGY STACK
 • n8n (Workflow Automation) — Apache 2.0 Open Source
+
 • Google Gemini (AI Content) — Free tier available
+
 • Airtable (Content Management) — 5 seats / $20/seat
+
 • Google Sheets (Data Source) — Free
+
 • LinkedIn / Facebook APIs — Free
