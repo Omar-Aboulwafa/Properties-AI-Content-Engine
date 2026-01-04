@@ -1,0 +1,828 @@
+{
+  "name": "Social Media Content Generator",
+  "nodes": [
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "19EFGvka7QubwRd7AIrWg9K-W5bSDV4cCqXAIO487Xig",
+          "mode": "list",
+          "cachedResultName": "UAE Property dataset",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/19EFGvka7QubwRd7AIrWg9K-W5bSDV4cCqXAIO487Xig/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/19EFGvka7QubwRd7AIrWg9K-W5bSDV4cCqXAIO487Xig/edit#gid=0"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "post content status"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -320,
+        -96
+      ],
+      "id": "c8d0028f-00dc-460d-a92c-b5a770a73dd2",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "GZ6JEsIQo9xrzord",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "batchSize": "=1",
+        "options": {
+          "reset": false
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        -112,
+        -96
+      ],
+      "id": "b97b766a-f474-44b4-a3ae-02677ec97144",
+      "name": "Loop Over Items"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.title }}{{ $json.displayAddress }}{{ $json.bathrooms }}{{ $json.bedrooms }}{{ $json.sizeMin }}{{ $json.furnishing }}{{ $json.description }}",
+        "hasOutputParser": true,
+        "needsFallback": true,
+        "options": {
+          "systemMessage": "=<system>\nYou are the \"Chief Investment Officer\" AI for Aqary Investment & Development, a premium real estate consultancy in Abu Dhabi.\nYour goal is to generate high-value, platform-optimized content that positions Aqary not just as a broker, but as a trusted wealth advisor.\n\nOBJECTIVES:\n1. EDUCATE: Teach investors about ROI, Capital Appreciation, and Market Trends (The \"Expert\" Angle).\n2. INSPIRE: Use sensory language to sell the lifestyle of Al Reem, Yas Island, and Al Shamkha (The \"Luxury\" Angle).\n3. CONVERT: Drive traffic to the \"Aqary Social Hub\" or listing pages without sounding desperate.\n\nOUTPUT REQUIREMENTS:\n- Output MUST be valid, parseable JSON only.\n-NO markdown formatting (no ```json wrappers).\n-NO introductory text.\n-Keep \"post_content\" under 50 words total.\n-Focus on benefits over features.\n-Match tone: Professional & Urgent.\n-Output ONLY the raw JSON object.\n</system>\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        -320,
+        448
+      ],
+      "id": "a0733aef-f0a0-4f82-a650-c46cf1e56cf7",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.toolThink",
+      "typeVersion": 1.1,
+      "position": [
+        -32,
+        688
+      ],
+      "id": "df1f31c2-618a-43ba-aabf-93302ade7e1d",
+      "name": "Think"
+    },
+    {
+      "parameters": {
+        "fieldToSplitOut": "=['Property Image']",
+        "include": "selectedOtherFields",
+        "fieldsToInclude": "title, displayAddress, bathrooms, bedrooms, sizeMin, furnishing, description",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitOut",
+      "typeVersion": 1,
+      "position": [
+        96,
+        -80
+      ],
+      "id": "7e7c15dd-e295-482f-889c-a323a3c6a61e",
+      "name": "Split Out"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "8e55f954-b397-4f45-b444-f0c40cc9754c",
+              "name": "Post text",
+              "value": "={{ $json.output }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        32,
+        448
+      ],
+      "id": "03b7f751-5ed1-4ec5-9327-0ba90eb35f1a",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "schemaType": "manual",
+        "inputSchema": "{\n  \"type\": \"object\",\n  \"properties\": {\n    \"post_title\": {\n      \"type\": \"string\",\n      \"description\": \"Catchy title for the property listing with emoji\"\n    },\n    \"post_content\": {\n      \"type\": \"string\",\n      \"description\": \"Engaging 3-4 paragraph marketing content highlighting property features, location benefits, and investment potential\"\n    },\n    \"hashtags\": {\n      \"type\": \"array\",\n      \"items\": {\n        \"type\": \"string\"\n      },\n      \"description\": \"5-7 relevant real estate hashtags without the # symbol\"\n    },\n    \"call_to_action\": {\n      \"type\": \"string\",\n      \"description\": \"Compelling CTA encouraging contact or inquiry\"\n    }\n  },\n  \"required\": [\"post_title\", \"post_content\", \"hashtags\", \"call_to_action\"]\n}\n"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        80,
+        688
+      ],
+      "id": "f389e629-d44b-4d24-bab1-cea005544792",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "base": {
+          "__rl": true,
+          "value": "appiG5gpAj9kTx5cm",
+          "mode": "list",
+          "cachedResultName": "AQARY PROPERTIES",
+          "cachedResultUrl": "https://airtable.com/appiG5gpAj9kTx5cm"
+        },
+        "table": {
+          "__rl": true,
+          "value": "tbloDUMttKzTByMbS",
+          "mode": "list",
+          "cachedResultName": "Social Media Posts",
+          "cachedResultUrl": "https://airtable.com/appiG5gpAj9kTx5cm/tbloDUMttKzTByMbS"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Post Title": "={{ $('Split Out').item.json.title }}",
+            "Post Content": "={{ $('AI Agent').item.json.output.post_title }}\n{{ $('AI Agent').item.json.output.post_content }}\n{{ $('AI Agent').item.json.output.hashtags }}\n{{ $('AI Agent').item.json.output.call_to_action }}\n#{{ $('AI Agent').item.json.output.hashtags.join(' #') }}\n\n",
+            "Properties": "={{ $('Split Out').item.json.displayAddress }}",
+            "Image": "={{ [ { \"url\": $('Split Out').item.json[\"['Property Image']\"] } ] }}",
+            "post status": "Waiting For Approval",
+            "Property ID": "={{ $('Get row(s) in sheet').item.json['Property ID'] }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Property ID",
+              "displayName": "Property ID",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Post Title",
+              "displayName": "Post Title",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Post Content",
+              "displayName": "Post Content",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Image",
+              "displayName": "Image",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Platform",
+              "displayName": "Platform",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "options": [
+                {
+                  "name": "Facebook",
+                  "value": "Facebook"
+                },
+                {
+                  "name": "Instagram",
+                  "value": "Instagram"
+                },
+                {
+                  "name": "Twitter",
+                  "value": "Twitter"
+                },
+                {
+                  "name": "LinkedIn",
+                  "value": "LinkedIn"
+                },
+                {
+                  "name": "TikTok",
+                  "value": "TikTok"
+                },
+                {
+                  "name": "Blog",
+                  "value": "Blog"
+                }
+              ],
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Scheduled Date",
+              "displayName": "Scheduled Date",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "Properties",
+              "displayName": "Properties",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "post status",
+              "displayName": "post status",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "options",
+              "options": [
+                {
+                  "name": "Posted",
+                  "value": "Posted"
+                },
+                {
+                  "name": "Approved",
+                  "value": "Approved"
+                },
+                {
+                  "name": "Waiting For Approval",
+                  "value": "Waiting For Approval"
+                }
+              ],
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "Social Media Posts",
+              "displayName": "Social Media Posts",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "From field: Social Media Posts",
+              "displayName": "From field: Social Media Posts",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "array",
+              "readOnly": false,
+              "removed": true
+            },
+            {
+              "id": "post status (from Social Media Posts)",
+              "displayName": "post status (from Social Media Posts)",
+              "required": false,
+              "defaultMatch": false,
+              "canBeUsedToMatch": true,
+              "display": true,
+              "type": "string",
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {
+          "typecast": true
+        }
+      },
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2.1,
+      "position": [
+        -320,
+        1536
+      ],
+      "id": "14e15464-4cc3-4987-a5e5-23b97360298f",
+      "name": "Create a record",
+      "retryOnFail": true,
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "bzTtAq5McoFfNSos",
+          "name": "Airtable Personal Access Token account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -544,
+        -96
+      ],
+      "id": "f69269bc-cec2-478a-9db7-61b6e13b5ffd",
+      "name": "Schedule Trigger",
+      "retryOnFail": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "model": "xiaomi/mimo-v2-flash:free",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -304,
+        688
+      ],
+      "id": "765c353b-f8cf-4ff3-bb24-720f20e7d246",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "hcqvjGYibXfoNplU",
+          "name": "OpenRouter account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## 🧠 AI AGENT (GEMINI)\n\n**Role:** \"Chief Investment Officer\"\n**Content Strategy:**\n- **Educate:** Focus on ROI & Capital Appreciation.\n- **Inspire:** Use sensory language for luxury lifestyle.\n- **Convert:** Professional CTAs driving to \"Social Hub\".\n\n**Technical Specs:**\n- **Model:** Google Gemini Flash\n- **Output:** Strict JSON Schema (No markdown, no fluff).\n- **Validation:** Structured Output Parser ensures 100% database compatibility.\n",
+        "height": 736,
+        "width": 560,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -352,
+        160
+      ],
+      "id": "c9b85205-b213-4177-8f6b-79362f5a4877",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "19EFGvka7QubwRd7AIrWg9K-W5bSDV4cCqXAIO487Xig",
+          "mode": "list",
+          "cachedResultName": "UAE Property dataset",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/19EFGvka7QubwRd7AIrWg9K-W5bSDV4cCqXAIO487Xig/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/19EFGvka7QubwRd7AIrWg9K-W5bSDV4cCqXAIO487Xig/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Property ID": "={{ $('Get row(s) in sheet').item.json['Property ID'] }}",
+            "post content status": "Created"
+          },
+          "matchingColumns": [
+            "Property ID"
+          ],
+          "schema": [
+            {
+              "id": "index",
+              "displayName": "index",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Property ID",
+              "displayName": "Property ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "title",
+              "displayName": "title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "displayAddress",
+              "displayName": "displayAddress",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "bathrooms",
+              "displayName": "bathrooms",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "bedrooms",
+              "displayName": "bedrooms",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "type",
+              "displayName": "type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "price",
+              "displayName": "price",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "sizeMin",
+              "displayName": "sizeMin",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "furnishing",
+              "displayName": "furnishing",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "description",
+              "displayName": "description",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Property Image",
+              "displayName": "Property Image",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "post content status",
+              "displayName": "post content status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -160,
+        1536
+      ],
+      "id": "1420e6cc-60c2-45d0-a9fa-0724e1e70e49",
+      "name": "Update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "GZ6JEsIQo9xrzord",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## 🚀 AQARY AI CONTENT ENGINE v1.0\n\n**Objective:**\nAutomate the generation of high-value, investor-focused social media content for new property listings.\n\n**Process Flow:**\n1. **Ingest:** Fetch new \"Pending\" properties from Google Sheets.\n2. **Process:** AI \"Chief Investment Officer\" analyzes data & writes copy.\n3. **Format:** Structure data into clean JSON (Title, Body, Hashtags).\n4. **Output:** Create review-ready records in Airtable & update source status.\n\n**Schedule:** Runs every 5 mins to process new batches.\n**Maintenance:** Ensure Google Sheets \"Image\" links are direct URLs.\n",
+        "height": 432,
+        "width": 448,
+        "color": 7
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -1152,
+        -336
+      ],
+      "id": "5263142a-957f-4371-9dca-3f845edfd8a7",
+      "name": "Sticky Note2"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -144,
+        688
+      ],
+      "id": "b719c803-92f0-4937-a1b8-2e3fb5ab43e1",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "uNBMKB8wVKwpen3f",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "## 📥 INGESTION LAYER\n\n**Source:** Google Sheets (Master Property DB)\n**Logic:**\n- Fetches rows where `post content status` is **Empty** or **Pending**.\n- **Batch Size:** 1 (Processes sequentially to ensure AI quality).\n\n**Safety Check:**\n- Prevents re-processing of already \"Created\" properties.\n- Filters out rows with missing critical data (Price, Location).\n",
+        "height": 448,
+        "width": 560,
+        "color": 5
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -352,
+        -352
+      ],
+      "id": "e73dbed2-1f50-41f8-ab94-2d9cd9ce986c",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## ⚙️ DATA NORMALIZATION\n\n**Function:**\n- Parses AI JSON output into separate fields.\n- Formats hashtags (Arrays → String).\n- Cleans up \"Smart Quotes\" or formatting errors.\n- Prepares data for Airtable mapping.\n\n**Key Mapping:**\n`$json.output.post_content` → **Caption Body**\n`$json.output.hashtags` → **Tag List**\n\n\n## 💾 OUTPUT & STATE SYNC\n\n**Primary Destination (Airtable):**\n- Creates a new record in `Social Media Posts`.\n- Status: **\"Waiting For Approval\"** (Human-in-the-loop).\n\n**Source Update (Google Sheets):**\n- **Action:** Updates the original row.\n- **Change:** Sets `post content status` to **\"Created\"**.\n- **Purpose:** Prevents duplicate processing in the next run.\n\n**Note:** Operations are sequential to ensure data integrity.\n\n",
+        "height": 800,
+        "width": 560,
+        "color": 4
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        -352,
+        928
+      ],
+      "id": "43f344d6-39df-4083-bece-9bc9f83e7b0a",
+      "name": "Sticky Note3"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop Over Items": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Split Out",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Think": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Split Out": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Create a record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a record": {
+      "main": [
+        [
+          {
+            "node": "Update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update row in sheet": {
+      "main": [
+        [
+          {
+            "node": "Loop Over Items",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 1
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "versionId": "c7f79808-cf17-44f6-96a1-57b65178aaa0",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d8d0368bb2fa5ef3159f42989710164fa0da9e4ab4fca5d38929916d1121c9dc"
+  },
+  "id": "iZ9vBsqg3fUaDuMz",
+  "tags": [
+    {
+      "updatedAt": "2026-01-02T15:31:43.709Z",
+      "createdAt": "2026-01-02T15:31:43.709Z",
+      "id": "68QKXDbO1kWhqGPV",
+      "name": "Property"
+    }
+  ]
+}
