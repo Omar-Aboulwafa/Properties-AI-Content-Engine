@@ -4,7 +4,7 @@ Automated Social Media Marketing Intelligence Platform
 AQARY AI CONTENT ENGINE
 Automated Social Media Marketing Intelligence Platform
 
-EXECUTIVE SUMMARY
+## EXECUTIVE SUMMARY
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 • Automates content generation from property listings
 • AI-powered copywriting (Investment + Luxury angles)
@@ -12,14 +12,14 @@ EXECUTIVE SUMMARY
 • Human approval workflow (Quality control)
 • ROI Tracking & Analytics ready
 
-RESULTS (after 30 days)
+## RESULTS (after 30 days)
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ✓ 200+ posts generated (vs. 10 manual/month)
 ✓ 40+ hours saved on copywriting per month
 ✓ Brand consistency across all channels
 ✓ Lead response automation (upcoming phase)
 
-TECHNOLOGY STACK
+## TECHNOLOGY STACK
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 • n8n (Workflow Automation) — Apache 2.0 Open Source
 • Google Gemini (AI Content) — Free tier available
