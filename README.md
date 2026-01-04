@@ -46,20 +46,13 @@ Automated Social Media Marketing Intelligence Platform
 
 ### Workflow #2: Publisher
 - **Input:** Approved records from Airtable
-- 
 - **Processing:** Platform-specific formatting (LinkedIn vs. Instagram etc...)
-- 
 - **Output:** Live posts on social networks
-- 
 - **Tracking:** Updates Airtable status to "Posted"
-- 
 
 ## Data Security
 - Credentials stored in n8n's encrypted vault
-- 
 - OAuth2 for all platform integrations
-- 
 - No API keys in public repos
-- 
 - Audit logs in Airtable
 
