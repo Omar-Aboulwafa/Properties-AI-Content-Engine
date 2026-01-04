@@ -56,3 +56,37 @@ Automated Social Media Marketing Intelligence Platform
 - No API keys in public repos
 - Audit logs in Airtable
 
+# AQARY CONTENT ENGINE - USER GUIDE
+
+## For Marketing Manager (Non-Technical)
+
+### How to Add a New Property
+1. Open Google Sheet: "UAE Property Dataset"
+2. Add new row with: Title, Address, Bedrooms, Bathrooms, Price, Images
+3. Wait 5 minutes (workflow runs every 5 mins)
+4. Check Airtable "Social Media Posts" table
+
+### How to Approve a Post
+1. Open Airtable → "Posts Management"
+2. Review the auto-generated content
+3. Edit if needed (fix grammar, add details)
+4. Choose Platform(s) to post
+5. Click **"Approve"** button
+6. Post goes live within 10 minutes
+
+### How to Track Performance
+1. Open Airtable → "Posts Management"
+2. Filter by `post status = "Posted"`
+3. View timestamp in "Post Date"
+
+## For System Administrator (Technical)
+
+### Monitoring Health
+- **Check n8n Dashboard:** Look for red/failed executions
+- **Expected Frequency:** Content Gen runs every 5 mins, Publisher every 10 mins
+- **Log Storage:** All errors logged in n8n execution history
+
+### Scaling Up
+- To process more properties: Lower the batch interval
+- To add new platform: Update Switch node in Workflow #2
+- To change AI tone: Edit system prompt in AI Agent node
