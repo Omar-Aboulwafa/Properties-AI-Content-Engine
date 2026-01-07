@@ -16,7 +16,6 @@ Automated Social Media Marketing Intelligence Platform
 • ROI Tracking & Analytics ready
 
 ## RESULTS (after 30 days)
-✓ 200+ posts generated (vs. 10 manual/month)
 
 ✓ 40+ hours saved on copywriting per month
 
